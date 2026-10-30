@@ -273,6 +273,7 @@ class TaskWorker(process_manager.MessageReceiver):
                 env = util.BuildEnv(tools_env.env_cmds)
             if 'cl' in tools_env.tools:
                 argv[0] = tools_env.tools['cl']
+        argv = task_data.get('launcher', []) + argv
 
         with util.FolderChanger(task_folder):
             p, out, err = util.Execute(argv, env = env)

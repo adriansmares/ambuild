@@ -141,7 +141,12 @@ class CompilerLocator(object):
             self.detect_msvc_tools(cli)
         else:
             self.detect_gcc_tools(cli)
+        self.detect_launchers(cli)
         return cli
+
+    def detect_launchers(self, cli):
+        cli.cc_launcher = shlex.split(os.environ.get('CC_LAUNCHER', ''))
+        cli.cxx_launcher = shlex.split(os.environ.get('CXX_LAUNCHER', ''))
 
     def detect_cxx(self):
         if 'CC' in os.environ or 'CXX' in os.environ:
