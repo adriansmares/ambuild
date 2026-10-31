@@ -18,6 +18,7 @@ from __future__ import print_function
 import os
 import re
 import shlex
+import shutil
 import tempfile
 from ambuild2 import util
 from ambuild2.frontend.cpp import cpp_rules
@@ -145,8 +146,15 @@ class CompilerLocator(object):
         return cli
 
     def detect_launchers(self, cli):
-        cli.cc_launcher = shlex.split(os.environ.get('CC_LAUNCHER', ''))
-        cli.cxx_launcher = shlex.split(os.environ.get('CXX_LAUNCHER', ''))
+        cli.cc_launcher = self.detect_launcher('CC_LAUNCHER')
+        cli.cxx_launcher = self.detect_launcher('CXX_LAUNCHER')
+
+    def detect_launcher(self, env_name):
+        argv = shlex.split(os.environ.get(env_name, ''))
+        if argv and shutil.which(argv[0]) is None:
+            raise CompilerNotFoundException('Unable to find {} command: {}'.format(
+                env_name, argv[0]))
+        return argv
 
     def detect_cxx(self):
         if 'CC' in os.environ or 'CXX' in os.environ:

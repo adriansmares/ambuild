@@ -353,7 +353,7 @@ class TaskWorker(process_manager.MessageReceiver):
             rc_argv = task_data['rc_argv']
             return ' '.join([arg for arg in cl_argv]) + ' && ' + ' '.join([arg for arg in rc_argv])
         elif message['task_type'] == 'cxx':
-            return ' '.join([arg for arg in task_data['argv']])
+            return ' '.join([arg for arg in task_data.get('launcher', []) + task_data['argv']])
         elif message['task_type'] == 'cmd':
             return ' '.join([arg for arg in task_data])
         elif message['task_type'] in ['cp', 'ln']:
